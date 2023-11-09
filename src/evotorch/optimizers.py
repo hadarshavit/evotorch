@@ -165,6 +165,63 @@ class Adam(TorchOptimizer):
         super().__init__(torch.optim.Adam, solution_length=solution_length, dtype=dtype, device=device, config=config)
 
 
+class RAdam(TorchOptimizer):
+    """
+    The RAdam optimizer.
+    """
+
+    def __init__(
+        self,
+        *,
+        solution_length: int,
+        dtype: DType,
+        device: Device = "cpu",
+        stepsize: Optional[float] = None,
+        beta1: Optional[float] = None,
+        beta2: Optional[float] = None,
+        epsilon: Optional[float] = None,
+    ):
+        """
+        `__init__(...)`: Initialize the Adam optimizer.
+
+        Args:
+            solution_length: Length of a solution of the problem which is
+                being worked on.
+            dtype: The dtype of the problem which is being worked on.
+            device: The device on which the solutions are kept.
+            stepsize: The step size (i.e. the learning rate) employed
+                by the optimizer.
+            beta1: The beta1 hyperparameter. None means the default.
+            beta2: The beta2 hyperparameter. None means the default.
+            epsilon: The epsilon hyperparameters. None means the default.
+            amsgrad: Whether or not to use the amsgrad behavior.
+                None means the default behavior.
+                See `torch.optim.Adam` for details.
+        """
+
+        config = {}
+
+        if stepsize is not None:
+            config["lr"] = float(stepsize)
+
+        if beta1 is None and beta2 is None:
+            pass  # nothing to do
+        elif beta1 is not None and beta2 is not None:
+            config["betas"] = (float(beta1), float(beta2))
+        else:
+            raise ValueError(
+                "The arguments beta1 and beta2 were expected"
+                " as both None, or as both real numbers."
+                " However, one of them was encountered as None and"
+                " the other was encountered as something other than None."
+            )
+
+        if epsilon is not None:
+            config["eps"] = float(epsilon)
+
+        super().__init__(torch.optim.RAdam, solution_length=solution_length, dtype=dtype, device=device, config=config)
+
+
 class SGD(TorchOptimizer):
     """
     The SGD optimizer.
