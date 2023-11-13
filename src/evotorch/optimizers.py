@@ -498,6 +498,8 @@ def get_optimizer_class(s: str, optimizer_config: Optional[dict] = None) -> Call
         cls = Adam
     elif s in ("sgd", "sga"):
         cls = SGD
+    elif s == "radam":
+        cls = RAdam
     else:
         raise ValueError(f"Unknown optimizer: {repr(s)}")
 
